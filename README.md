@@ -33,6 +33,8 @@ The class *PMKNetConnection* provides the async communication to the server.
 
 Example:
 
+    import Taxii2Client
+    
     // taxii-2.0
     let conn = PMKNetConnection(host: "cti-taxii.mitre.org", user: "", password: "")
     let server = PMKServer(conn: conn)
@@ -56,10 +58,7 @@ Create a Package.swift file for your project and add a dependency to:
 #### Using Xcode
 
 Select File > Swift Packages > Add Package Dependency...,
-https://github.com/workingDog/Taxii2ClientSwift.git
-Then in your code:
-
-    import Taxii2Client
+"https://github.com/workingDog/Taxii2ClientSwift.git"
 
 ### Dependencies and requirements
 
@@ -69,7 +68,8 @@ Then in your code:
 - [PMKFoundation](https://github.com/PromiseKit/Foundation)
 - [GenericJSON](https://github.com/zoul/generic-json-swift)
 
- 
+Requires Swift 5
+
 ### References
  
 1) [TAXII 2.1 Specification](https://oasis-open.github.io/cti-documentation/)
