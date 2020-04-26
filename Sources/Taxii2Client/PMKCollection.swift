@@ -70,7 +70,7 @@ class PMKCollection {
         return conn.fetchRaw(path: thePath, headerType: 1)
     }
 
-    func getManifests(bundle: TaxiiManifestRecord) -> Promise<TaxiiManifestRecord?> {
+    func getManifests() -> Promise<TaxiiManifestRecord?> {
         return conn.fetchThis(path: thePath + "manifest/", taxiiType: TaxiiManifestRecord.self)
     }
  
