@@ -1,12 +1,12 @@
 # TAXII 2.1 client library in Swift
 
-**Taxii2Client** is a Swift library that provides a set of classes and methods for building clients to [TAXII-2.1](https://oasis-open.github.io/cti-documentation/resources#taxii-21-specification) servers.
+**Taxii2Client** is a Swift library that provides a set of classes and methods for building clients to [TAXII-2.1](https://oasis-open.github.io/cti-documentation/) servers.
 
 [[1]](https://oasis-open.github.io/cti-documentation/) 
 Trusted Automated Exchange of Intelligence Information (TAXII) is an application layer protocol 
 used to exchange cyber threat intelligence (CTI) over HTTPS. 
 TAXII enables organizations to share CTI by defining an API that aligns with common sharing models.
-[TAXII 2.0 Specification](https://oasis-open.github.io/cti-documentation/) defines the TAXII RESTful API and its resources along with the requirements for TAXII Client and Server implementations. 
+[TAXII-2.1](https://oasis-open.github.io/cti-documentation/) defines the TAXII RESTful API and its resources along with the requirements for TAXII Client and Server implementations. 
 
 
 **Taxii2Client** uses asynchronous requests to fetch TAXII 2.1 server resources. 
@@ -72,7 +72,7 @@ Requires Swift 5
 
 ### References
  
-1) [TAXII 2.1 Specification](https://oasis-open.github.io/cti-documentation/)
+1) [TAXII 2.1 Specification](https://oasis-open.github.io/cti-documentation/resources#taxii-21-specification)
 
 ### Status
 work in progress, not yet ready
