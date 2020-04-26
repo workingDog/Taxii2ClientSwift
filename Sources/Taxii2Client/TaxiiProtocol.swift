@@ -148,33 +148,35 @@ struct TaxiiFilters: Codable {
     let version: [String]?
     let spec_version: [String]?
     
+    init(added_after: String? = nil, limit: Int? = nil, next: String? = nil, id: [String]? = nil, type: [String]? = nil,
+         version: [String]? = nil, spec_version: [String]? = nil) {
+        self.added_after = added_after
+        self.limit = limit
+        self.next = next
+        self.id = id
+        self.type = type
+        self.version = version
+        self.spec_version = spec_version
+    }
+    
     func asParameters() -> [String:String] {
         var params = [String:String]()
         
         if self.added_after != nil { params["added_after"] = added_after }
         if self.limit != nil { params["limit"] = "\(limit!)" }
         if self.next != nil { params["next"] = next }
-        
-        var idParam = ""
+
         if self.id != nil {
-            idParam = "match[id]" + self.id!.joined(separator: ",") + "&"
+            params["match[id]"] = self.id!.joined(separator: ",")
         }
-        var typeParam = ""
         if self.type != nil {
-            typeParam = "match[type]" + self.type!.joined(separator: ",") + "&"
+            params["match[type]"] = self.type!.joined(separator: ",")
         }
-        var versionParam = ""
         if self.version != nil {
-            versionParam = "match[version]" + self.version!.joined(separator: ",") + "&"
+            params["match[version]"] = self.version!.joined(separator: ",")
         }
-        var spec_versionParam = ""
         if self.spec_version != nil {
-            spec_versionParam = "match[spec_version]" + self.spec_version!.joined(separator: ",") + "&"
-        }
-        
-        let combinParam = idParam + typeParam + versionParam + spec_versionParam
-        if !combinParam.isEmpty {
-            params[""] = String(combinParam.dropLast())
+            params["match[spec_version]"] = self.spec_version!.joined(separator: ",")
         }
 
         return params
