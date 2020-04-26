@@ -173,7 +173,9 @@ struct TaxiiFilters: Codable {
         }
         
         let combinParam = idParam + typeParam + versionParam + spec_versionParam
-        params[""] = String(combinParam.dropLast())
+        if !combinParam.isEmpty {
+            params[""] = String(combinParam.dropLast())
+        }
 
         return params
     }
