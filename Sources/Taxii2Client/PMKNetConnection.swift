@@ -43,6 +43,41 @@ class PMKNetConnection: TaxiiConnection {
         }
     }
     
+    /*
+     * fetch data from the server. A GET to the chosen path with the defined parameters is sent to the Taxii-2.x server.
+     * The TAXII server response is parsed then converted to a Taxii-2.x protocol resource.
+     *
+     * @param path the full path to the server resource
+     * @param filters the filters to apply the the query
+     * @param headerType with value = 0 (default) for request media type for stix resources,
+     *                        value=1 for request media type for taxii resources
+     * @return Promise
+     */
+    func fetchThisWithFilters<T: Decodable>(path: String, filters: TaxiiFilters, headerType: Int = 0, taxiiType: T.Type) -> Promise<T?> {
+        let params: [String:String] = filters.asParameters()
+     //   print("----> fetchThisWithFilters path: \(path)  params: \(params)")
+        let mediaType = headerType == 1 ? mediaStix : mediaTaxii
+
+        var components = URLComponents(string: path)!
+        components.queryItems = params.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.addValue(taxiiVersion, forHTTPHeaderField: "version")
+        request.addValue("Basic \(hash())", forHTTPHeaderField: "Authorization")
+        request.addValue(mediaType, forHTTPHeaderField: "Accept")
+        request.addValue(mediaType, forHTTPHeaderField: "Content-Type")
+        
+        return firstly {
+            sessionManager.dataTask(.promise, with: request)
+        }.compactMap {
+            return try JSONDecoder().decode(T.self, from: $0.data)
+        }
+    }
+    
     /*  
      * post data to the server. A POST to the chosen path is sent to the Taxii-2.x server.
      * The TAXII server response is parsed then converted to a Taxii-2.x protocol resource.

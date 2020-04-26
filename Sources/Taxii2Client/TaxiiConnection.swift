@@ -49,8 +49,8 @@ class TaxiiConnection {
         self.taxiiVersion = taxiiVersion
         self.timeout = timeout
         if self.taxiiVersion.trim() == "2.1" {
-            self.mediaStix  = "application/stix+json"   // "application/stix+json;version=2.1"
-            self.mediaTaxii = "application/taxii+json"  // "application/taxii+json;version=2.1"
+            self.mediaStix  = "application/stix+json;version=2.1"
+            self.mediaTaxii = "application/taxii+json;version=2.1"
         } else {
             self.mediaStix  = "application/vnd.oasis.stix+json"
             self.mediaTaxii = "application/vnd.oasis.taxii+json"

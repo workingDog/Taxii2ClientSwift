@@ -137,6 +137,49 @@ struct TaxiiManifestRecord: Codable {
 }
 
 /*
+ * The URL Filtering Parameters
+ */
+struct TaxiiFilters: Codable {
+    let added_after: String?
+    let limit: Int?
+    let next: String?
+    let id: [String]?
+    let type: [String]?
+    let version: [String]?
+    let spec_version: [String]?
+    
+    func asParameters() -> [String:String] {
+        var params = [String:String]()
+        
+        if self.added_after != nil { params["added_after"] = added_after }
+        if self.limit != nil { params["limit"] = "\(limit!)" }
+        if self.next != nil { params["next"] = next }
+        
+        var idParam = ""
+        if self.id != nil {
+            idParam = "match[id]" + self.id!.joined(separator: ",") + "&"
+        }
+        var typeParam = ""
+        if self.type != nil {
+            typeParam = "match[type]" + self.type!.joined(separator: ",") + "&"
+        }
+        var versionParam = ""
+        if self.version != nil {
+            versionParam = "match[version]" + self.version!.joined(separator: ",") + "&"
+        }
+        var spec_versionParam = ""
+        if self.spec_version != nil {
+            spec_versionParam = "match[spec_version]" + self.spec_version!.joined(separator: ",") + "&"
+        }
+        
+        let combinParam = idParam + typeParam + versionParam + spec_versionParam
+        params[""] = String(combinParam.dropLast())
+
+        return params
+    }
+}
+
+/*
  * The manifest resource is a simple wrapper around a list of manifest-record items.
  */
 struct TaxiiManifestResource: Codable {
