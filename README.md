@@ -29,6 +29,8 @@ The following TAXII 2.1 API services are supported with these corresponding asyn
 - Get Status --> status.get()
 - Add Objects --> collection.addObject(bundle) and collection.addObjects(envelope)
 
+(NOTE: the objects return from these calls consist of json constructs, not Swift class STIX-2.1 objects)
+
 The class *PMKNetConnection* provides the async communication to the server.
 
 Example:
