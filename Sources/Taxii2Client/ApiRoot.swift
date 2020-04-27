@@ -1,6 +1,6 @@
 //
-//  PMKApiRoot.swift
-//  Taxii2Swift
+//  ApiRoot.swift
+//  Taxii2Client
 //
 //  Created by Ringo Wathelet on 2020/03/22.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
@@ -17,13 +17,13 @@ import PromiseKit
  * @param api_root the api_root path of this ApiRoot request
  * @param conn     the connection to the Taxii-2.x server
  */
-class PMKApiRoot {
+class ApiRoot {
     
     let api_root: String
-    let conn: PMKNetConnection
+    let conn: TaxiiConnection
     
-    init(api_root: String, conn: PMKNetConnection) {
-        self.api_root = PMKNetConnection.withLastSlash(api_root)
+    init(api_root: String, conn: TaxiiConnection) {
+        self.api_root = TaxiiConnection.withLastSlash(api_root)
         self.conn = conn
     }
     
@@ -32,7 +32,7 @@ class PMKApiRoot {
     }
     
     func collections() -> Promise<TaxiiCollections?> {
-        return PMKCollections(api_root: api_root, conn: conn).get()
+        return Collections(api_root: api_root, conn: conn).get()
     }
     
     func collections(index: Int) -> Promise<TaxiiCollection?> {
@@ -42,7 +42,7 @@ class PMKApiRoot {
     }
     
     func status(status_id: String) -> Promise<TaxiiStatus?> {
-        return PMKStatus(api_root: api_root, status_id: status_id, conn: conn).get()
+        return Status(api_root: api_root, status_id: status_id, conn: conn).get()
     }
     
 }

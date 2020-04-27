@@ -1,6 +1,6 @@
 //
-//  PMKCollection.swift
-//  Taxii2Swift
+//  Collection.swift
+//  Taxii2Client
 //
 //  Created by Ringo Wathelet on 2020/03/22.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
@@ -16,17 +16,17 @@ import PromiseKit
  *
  * @param conn the connection to the Taxii-2.x server
  */
-class PMKCollection {
+class Collection {
     
     let taxiiCollection: TaxiiCollection
     let api_root: String
-    let conn: PMKNetConnection
+    let conn: TaxiiConnection
     let basePath: String
     let thePath: String
     
-    init(taxiiCollection: TaxiiCollection, api_root: String, conn: PMKNetConnection)  {
+    init(taxiiCollection: TaxiiCollection, api_root: String, conn: TaxiiConnection)  {
         self.taxiiCollection = taxiiCollection
-        self.api_root = PMKNetConnection.withLastSlash(api_root)
+        self.api_root = TaxiiConnection.withLastSlash(api_root)
         self.conn = conn
         self.basePath = self.api_root + "collections/" + self.taxiiCollection.id
         self.thePath = self.basePath + "/objects/"
@@ -37,6 +37,7 @@ class PMKCollection {
         return conn.fetchThis(path: thePath, headerType: 1, taxiiType: TaxiiEnvelope.self)
     }
     
+    // taxii-2.0
     func getBundle() -> Promise<TaxiiBundle?> {
         return conn.fetchThis(path: thePath, headerType: 1, taxiiType: TaxiiBundle.self)
     }
@@ -87,7 +88,7 @@ class PMKCollection {
         }
     }
 
-    // taxii2.0
+    // taxii-2.0
     func addObjects(bundle: TaxiiBundle) -> Promise<TaxiiStatus?> {
         let jsonData = (try? JSONSerialization.data(withJSONObject: bundle)) ?? Data()
         return conn.postThis(path: thePath, jsonData: jsonData, taxiiType: TaxiiStatus.self)

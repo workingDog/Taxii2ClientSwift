@@ -1,6 +1,6 @@
 //
-//  PMKServer.swift
-//  Taxii2Swift
+//  Server.swift
+//  Taxii2Client
 //
 //  Created by Ringo Wathelet on 2020/03/21.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
@@ -15,14 +15,14 @@ import PromiseKit
  * @param path    the path to the TAXII server discovery endpoint, default "/taxii/"
  * @param conn    the connection to the Taxii-2.x server
  */
-class PMKServer {
+class Server {
     
     let path: String
-    let conn: PMKNetConnection
+    let conn: TaxiiConnection
     
     // "/taxii2/" for taxii-2.1
-    init(path: String = "/taxii/", conn: PMKNetConnection) {
-        self.path = PMKNetConnection.withLastSlash(path)
+    init(path: String = "/taxii/", conn: TaxiiConnection) {
+        self.path = TaxiiConnection.withLastSlash(path)
         self.conn = conn
     }
     

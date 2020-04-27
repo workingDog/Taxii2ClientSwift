@@ -1,5 +1,9 @@
 # TAXII 2.1 client library in Swift
 
+### Status
+work in progress, not yet ready
+
+
 **Taxii2Client** is a Swift library that provides a set of classes and methods for building clients to [TAXII-2.1](https://oasis-open.github.io/cti-documentation/) servers.
 
 [[1]](https://oasis-open.github.io/cti-documentation/) 
@@ -32,16 +36,15 @@ The following TAXII 2.1 API services are supported with these corresponding asyn
 
 (NOTE: the objects return from getBundle() and getEnvelope() consist of JSON constructs, not Swift STIX-2.1 class objects)
 
-
-The class *PMKNetConnection* provides the async communication to the server.
+The class *TaxiiConnection* provides the async communication to the server.
 
 Example:
 
     import Taxii2Client
     
     // taxii-2.0
-    let conn = PMKNetConnection(host: "cti-taxii.mitre.org", user: "", password: "")
-    let server = PMKServer(conn: conn)
+    let conn = TaxiiConnection(host: "cti-taxii.mitre.org", user: "", password: "")
+    let server = Server(conn: conn)
     server.discovery().done { disc in
         print("-----> discovery: \(disc as Optional)")
     }
@@ -78,5 +81,3 @@ Requires Swift 5
  
 1) [TAXII 2.1 Specification](https://oasis-open.github.io/cti-documentation/resources#taxii-21-specification)
 
-### Status
-work in progress, not yet ready

@@ -1,6 +1,6 @@
 //
 //  TaxiiProtocol.swift
-//  Taxii2
+//  Taxii2Client
 //
 //  Created by Ringo Wathelet on 2020/03/21.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
@@ -42,7 +42,7 @@ struct TaxiiApiRoot: Codable {
     let description: String?
 }
 
-/* Taxii-2.0
+/* Taxii-2.0 only
  * This type represents an object that was not added to the Collection.
  */
 struct TaxiiStatusFailure: Codable {
@@ -116,7 +116,7 @@ struct TaxiiCollections: Codable {
     let collections: [TaxiiCollection]?
 }
 
-/* Taxii-2.0
+/* Taxii-2.0 only
  * The manifest-entry type captures metadata about a single object, indicated by the id property.
  */
 struct TaxiiManifestEntry: Codable {
@@ -199,14 +199,14 @@ struct TaxiiVersionResource: Codable {
     let versions: [String]?
 }
 
-/* Taxii-2.0
- * The bundle is a simple wrapper for STIX 2 content.
+/* Taxii-2.0 only
+ * The bundle is a simple wrapper for STIX 2.0 content.
  */
 struct TaxiiBundle: Codable {
     let type: String
     let id: String
     let spec_version: String
-    let objects: [JSON]?     // [StixObject]?
+    let objects: [JSON]?
 }
 
 /*
@@ -216,5 +216,5 @@ struct TaxiiBundle: Codable {
 struct TaxiiEnvelope: Codable {
     let more: Bool?
     let next: String?
-    let objects: [JSON]?     // [StixObject]?
+    let objects: [JSON]?
 }

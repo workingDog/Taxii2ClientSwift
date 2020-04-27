@@ -1,101 +1,133 @@
 //
 //  TaxiiConnection.swift
-//  Taxii2Swift
+//  Taxii2Client
 //
-//  Created by Ringo Wathelet on 2020/03/24.
+//  Created by Ringo Wathelet on 2020/03/21.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
 //
 
 import Foundation
+import PromiseKit
+import PMKFoundation
 
-extension String {
-    func trim() -> String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
 
 /*
  * a network connection to a Taxii-2.x server
- *
- * @param host     the host string
- * @param port     the port number, as an Integer
- * @param protocol the protocol, either http or https (default)
- * @param user     the user login name
- * @param password the user login password
- * @param timeout  in seconds, default 10 seconds
  */
-class TaxiiConnection {
-    
-    let host: String
-    let port: Int
-    let user: String
-    let password: String
-    let protokol: String
-    let timeout: Int
-    let taxiiVersion: String
-    let mediaStix: String
-    let mediaTaxii: String
-    let sessionManager: URLSession
-    
-    
-    init(host: String, port: Int = -1, user: String, password: String,
-         protokol: String = "https", taxiiVersion: String = "2.0", timeout: Int = 10) {
+class TaxiiConnection: TaxiiConnect {
+
+    /*
+     * fetch data from the server. A GET to the chosen path is sent to the Taxii-2.x server.
+     * The TAXII server response is parsed then converted to a Taxii-2.x protocol resource.
+     *
+     * @param path the full path to the server resource
+     * @param headerType with value = 0 (default) for request media type for stix resources,
+     *                        value=1 for request media type for taxii resources
+     * @return Promise
+     */
+    func fetchThis<T: Decodable>(path: String, headerType: Int = 0, taxiiType: T.Type) -> Promise<T?> {
+     //   print("----> fetchThis path: \(path)")
+        let mediaType = headerType == 1 ? mediaStix : mediaTaxii
+        let url = URL(string: path)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(taxiiVersion, forHTTPHeaderField: "version")
+        request.addValue("Basic \(hash())", forHTTPHeaderField: "Authorization")
+        request.addValue(mediaType, forHTTPHeaderField: "Accept")
+        request.addValue(mediaType, forHTTPHeaderField: "Content-Type")
         
-        self.host = TaxiiConnection.withoutLastSlash(host)
-        self.port = port
-        self.user = user
-        self.password = password
-        self.protokol = protokol
-        self.taxiiVersion = taxiiVersion
-        self.timeout = timeout
-        if self.taxiiVersion.trim() == "2.1" {
-            self.mediaStix  = "application/stix+json;version=2.1"
-            self.mediaTaxii = "application/taxii+json;version=2.1"
-        } else {
-            self.mediaStix  = "application/vnd.oasis.stix+json"
-            self.mediaTaxii = "application/vnd.oasis.taxii+json"
+        return firstly {
+            sessionManager.dataTask(.promise, with: request)
+        }.compactMap {
+            return try JSONDecoder().decode(T.self, from: $0.data)
         }
-        self.sessionManager = {
-            let configuration = URLSessionConfiguration.default
-            configuration.timeoutIntervalForRequest = 30 // seconds
-            configuration.timeoutIntervalForResource = 30 // seconds
-            return URLSession(configuration: configuration)
-        }()
     }
     
-    convenience init(url: URL, user: String, password: String, taxiiVersion: String = "2.0", timeout: Int = 10) {
-        self.init(host: url.host!, port: url.port ?? -1, user: user, password: password, protokol: url.scheme!)
+    /*
+     * fetch data from the server. A GET to the chosen path with the defined parameters is sent to the Taxii-2.x server.
+     * The TAXII server response is parsed then converted to a Taxii-2.x protocol resource.
+     *
+     * @param path the full path to the server resource
+     * @param filters the filters to apply the the query
+     * @param headerType with value = 0 (default) for request media type for stix resources,
+     *                        value=1 for request media type for taxii resources
+     * @return Promise
+     */
+    func fetchThisWithFilters<T: Decodable>(path: String, filters: TaxiiFilters, headerType: Int = 0, taxiiType: T.Type) -> Promise<T?> {
+        let params: [String:String] = filters.asParameters()
+     //   print("----> fetchThisWithFilters path: \(path)  params: \(params)")
+        let mediaType = headerType == 1 ? mediaStix : mediaTaxii
+
+        var components = URLComponents(string: path)!
+        components.queryItems = params.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.addValue(taxiiVersion, forHTTPHeaderField: "version")
+        request.addValue("Basic \(hash())", forHTTPHeaderField: "Authorization")
+        request.addValue(mediaType, forHTTPHeaderField: "Accept")
+        request.addValue(mediaType, forHTTPHeaderField: "Content-Type")
+        
+        return firstly {
+            sessionManager.dataTask(.promise, with: request)
+        }.compactMap {
+            return try JSONDecoder().decode(T.self, from: $0.data)
+        }
+    }
+    
+    /*  
+     * post data to the server. A POST to the chosen path is sent to the Taxii-2.x server.
+     * The TAXII server response is parsed then converted to a Taxii-2.x protocol resource.
+     *
+     * @param path the full path to the server resource
+     * @param json the JSON data
+     * @return Promise
+     */
+    func postThis<T: Decodable>(path: String, jsonData: Data, taxiiType: T.Type) -> Promise<T?> {
+        let url = URL(string: path)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue(taxiiVersion, forHTTPHeaderField: "version")
+        request.addValue("Basic \(hash())", forHTTPHeaderField: "Authorization")
+        request.addValue(mediaTaxii, forHTTPHeaderField: "Accept")
+        request.addValue(mediaStix, forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        return firstly {
+            sessionManager.dataTask(.promise, with: request)
+        }.compactMap {
+            return try JSONDecoder().decode(T.self, from: $0.data)
+        }
+    }
+    
+    /*
+     * fetch data from the server. A GET to the chosen path is sent to the Taxii-2.x server.
+     * The TAXII server response is returned as raw Data.
+     *
+     * @param path the full path to the server resource
+     * @param headerType with value = 0 (default) for request media type for stix resources,
+     *                        value=1 for request media type for taxii resources
+     * @return Promise
+     */
+    func fetchRaw(path: String, headerType: Int = 0) -> Promise<Data> {
+    //    print("----> fetchRaw path: \(path)")
+        let mediaType = headerType == 1 ? mediaStix : mediaTaxii
+        let url = URL(string: path)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(taxiiVersion, forHTTPHeaderField: "version")
+        request.addValue("Basic \(hash())", forHTTPHeaderField: "Authorization")
+        request.addValue(mediaType, forHTTPHeaderField: "Accept")      
+        request.addValue(mediaType, forHTTPHeaderField: "Content-Type")
+        
+        return firstly {
+            sessionManager.dataTask(.promise, with: request)
+        }.compactMap {
+            return $0.data
+        }
     }
 
-    convenience init(url: String, user: String, password: String, taxiiVersion: String = "2.0", timeout: Int = 10) {
-        self.init(url: URL(string: url)!, user: user, password: password)
-    }
-
-    // return the url without the last slash.
-    static func withoutLastSlash(_ url: String) -> String {
-        return (url.trim().last == "/") ? String(url.trim().dropLast()) : url
-    }
-
-    // return the url with a terminating slash.
-    static func withLastSlash(_ url: String) -> String {
-        return (url.trim().last == "/") ? url.trim() : url.trim() + "/"
-    }
-
-    func portString() -> String {
-        (String(port).isEmpty || (port == -1)) ? "" : ":" + String(port).trim()
-    }
-    
-    func protocolValue() -> String {
-        (protokol.trim().last == ":") ? String(protokol.trim().dropLast(1)) : protokol.trim()
-    }
-    
-    func baseURL() -> String {
-        protocolValue().lowercased() + "://" + host.trim() + portString()
-    }
-    
-    func hash() -> String {
-        let loginData = String(format: "%@:%@", user, password).data(using: .utf8)!
-        return loginData.base64EncodedString()
-    }
-    
 }

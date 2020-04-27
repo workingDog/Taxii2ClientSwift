@@ -1,6 +1,6 @@
 //
-//  PMKCollections.swift
-//  Taxii2Swift
+//  Collections.swift
+//  Taxii2Client
 //
 //  Created by Ringo Wathelet on 2020/03/22.
 //  Copyright © 2020 Ringo Wathelet. All rights reserved.
@@ -15,14 +15,14 @@ import PromiseKit
  *
  * @param conn the connection to the Taxii-2.x server
  */
-class PMKCollections {
+class Collections {
     
     let api_root: String
-    let conn: PMKNetConnection
+    let conn: TaxiiConnection
     let thePath: String
     
-    init(api_root: String, conn: PMKNetConnection)  {
-        self.api_root = PMKNetConnection.withLastSlash(api_root)
+    init(api_root: String, conn: TaxiiConnection)  {
+        self.api_root = TaxiiConnection.withLastSlash(api_root)
         self.conn = conn
         self.thePath = self.api_root + "collections/"
     }
