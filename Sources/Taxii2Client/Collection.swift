@@ -8,6 +8,7 @@
 
 import Foundation
 import PromiseKit
+import GenericJSON
 
 
 /*
@@ -42,38 +43,29 @@ class Collection {
         return conn.fetchThis(path: thePath, headerType: 1, taxiiType: TaxiiBundle.self)
     }
 
-    // todo
-    //    func getObjects(filters: TaxiiFilters? = nil) -> Promise<StixObject?> {
-    //
-    //            if let theFilters = filters {
-    //                return conn.fetchThisWithFilters(path: thePath + "objects/", filters: theFilters, taxiiType: StixObject.self)
-    //            } else {
-    //                 return conn.fetchThis(path: thePath + "objects/", headerType: 1, taxiiType: StixObject.self)
-    //            }
-    //        }
-    //    }
-    
-    // todo
-    //    func getObject(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<StixObject?> {
-    //
-    //            if let theFilters = filters {
-    //                return conn.fetchThisWithFilters(path: thePath + obj_id + "/", filters: theFilter, taxiiType: StixObject.self)
-    //            } else {
-    //                 return conn.fetchThis(path: thePath + obj_id + "/", headerType: 1, taxiiType: StixObject.self)
-    //            }
-    //        }
-    //    }
-    
-    // todo
-    //    func getObjectVersions(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<[String]> {
-    //
-    //            if let theFilters = filters {
-    //                return conn.fetchThisWithFilters(path: thePath + obj_id + "/versions/", filters: theFilters, taxiiType: [String].self)
-    //            } else {
-    //                 return conn.fetchThis(path: thePath + obj_id + "/versions/", headerType: 1, taxiiType: [String].self)
-    //            }
-    //        }
-    //    }
+    func getObjects(filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+        if let theFilters = filters {
+            return conn.fetchThisWithFilters(path: thePath + "objects/", filters: theFilters, taxiiType: JSON.self)
+        } else {
+            return conn.fetchThis(path: thePath + "objects/", headerType: 1, taxiiType: JSON.self)
+        }
+    }
+
+    func getObject(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+        if let theFilters = filters {
+            return conn.fetchThisWithFilters(path: thePath + obj_id + "/", filters: theFilters, taxiiType: JSON.self)
+        } else {
+            return conn.fetchThis(path: thePath + obj_id + "/", headerType: 1, taxiiType: JSON.self)
+        }
+    }
+
+    func getObjectVersions(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+        if let theFilters = filters {
+            return conn.fetchThisWithFilters(path: thePath + obj_id + "/versions/", filters: theFilters, taxiiType: JSON.self)
+        } else {
+            return conn.fetchThis(path: thePath + obj_id + "/versions/", headerType: 1, taxiiType: JSON.self)
+        }
+    }
 
     // returns the raw json data
     func getRaw() -> Promise<Data> {
