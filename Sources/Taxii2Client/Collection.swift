@@ -59,13 +59,25 @@ class Collection {
         }
     }
 
-    func getObjectVersions(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+    func getObjectVersions(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<TaxiiVersionResource?> {
         if let theFilters = filters {
-            return conn.fetchThisWithFilters(path: thePath + obj_id + "/versions/", filters: theFilters, taxiiType: JSON.self)
+            return conn.fetchThisWithFilters(path: thePath + obj_id + "/versions/", filters: theFilters, taxiiType: TaxiiVersionResource.self)
         } else {
-            return conn.fetchThis(path: thePath + obj_id + "/versions/", headerType: 1, taxiiType: JSON.self)
+            return conn.fetchThis(path: thePath + obj_id + "/versions/", headerType: 1, taxiiType: TaxiiVersionResource.self)
         }
     }
+    
+    /*
+     * version and spec_version filters only
+     */
+    func deleteObject(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+        if let theFilters = filters {
+            return conn.fetchThisWithFilters(path: thePath + "objects/" + obj_id + "/", filters: theFilters, taxiiType: JSON.self)
+        } else {
+            return conn.fetchThis(path: thePath + "objects/" + obj_id + "/", headerType: 1, taxiiType: JSON.self)
+        }
+    }
+
 
     // returns the raw json data
     func getRaw() -> Promise<Data> {
