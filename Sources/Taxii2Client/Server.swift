@@ -30,12 +30,42 @@ class Server {
         return conn.fetchThis(path: conn.baseURL() + path, taxiiType: TaxiiDiscovery.self)
     }
     
-    // returns the discovered api-root strings 
-    func getApiroots() -> Promise<[String]> {
+    // returns the discovered api-root strings
+    func getApirootStrings() -> Promise<[String]> {
         return firstly {
             self.discovery()
         }.compactMap {
             return $0?.api_roots
+        }
+    }
+    
+    // returns the discovered api-roots
+    func getApiroots() -> Promise<[TaxiiApiRoot]> {
+        return firstly {
+            self.discovery()
+        }.then { disc -> Promise<[TaxiiApiRoot]> in   // <-- important
+            if let roots = disc?.api_roots {
+                return self.getRoots(from: roots)
+            } else {
+                return Promise<[TaxiiApiRoot]> { seal in
+                    seal.resolve(.fulfilled([TaxiiApiRoot]()))
+                }
+            }
+        }
+    }
+    
+    private func getRoots(from disc: [String]) -> Promise<[TaxiiApiRoot]> {
+        when(resolved: disc.map { ApiRoot(api_root: $0, conn: self.conn).get().compactMap{$0} }).map { results in
+            var arr = [TaxiiApiRoot]()
+            results.forEach { result in
+                switch result {
+                case .fulfilled(let res):
+                    arr.append(res)
+                case .rejected(let error):
+                    print("=====> Action partially failed: \(error)")
+                }
+            }
+            return arr
         }
     }
     

@@ -74,7 +74,8 @@ struct TaxiiApiRoot: Identifiable, Codable, Equatable, Comparable {
     
     static func < (lhs: TaxiiApiRoot, rhs: TaxiiApiRoot) -> Bool {
         lhs.id < rhs.id
-    } 
+    }
+    
 }
 
 /* Taxii-2.0 only

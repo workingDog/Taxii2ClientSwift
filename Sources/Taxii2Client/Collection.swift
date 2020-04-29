@@ -78,7 +78,6 @@ class Collection {
         }
     }
 
-
     // returns the raw json data
     func getRaw() -> Promise<Data> {
         return conn.fetchRaw(path: thePath, headerType: 1)
