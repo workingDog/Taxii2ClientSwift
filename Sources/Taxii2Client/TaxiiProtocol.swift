@@ -18,15 +18,40 @@ import GenericJSON
  * It also has an indication of which API Root it considers the default,
  * or the one to use in the absence of other information/user choice.
  */
-struct TaxiiDiscovery: Codable {
+struct TaxiiDiscovery: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let title: String
     let description: String?
     let contact: String?
     let default_api: String?
     let api_roots: [String]?
     
+    init(title: String, description: String, contact: String, default_api: String, api_roots: [String]?) {
+        self.title = title
+        self.description = description
+        self.contact = contact
+        self.default_api = default_api
+        self.api_roots = api_roots
+    }
+    
+    init() {
+        self.title = ""
+        self.description = ""
+        self.contact = ""
+        self.default_api = ""
+        self.api_roots = []
+    }
+    
     private enum CodingKeys : String, CodingKey {
         case title, default_api = "default", description, contact, api_roots
+    }
+    
+    public static func == (lhs: TaxiiDiscovery, rhs: TaxiiDiscovery) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiDiscovery, rhs: TaxiiDiscovery) -> Bool {
+        lhs.id < rhs.id
     }
 }
 
@@ -35,34 +60,60 @@ struct TaxiiDiscovery: Codable {
  * such as a human-readable title and description, the TAXII versions it supports,
  * and the maximum size of the content body it will accept in a PUT or POST (max_content_length).
  */
-struct TaxiiApiRoot: Codable {
+struct TaxiiApiRoot: Identifiable, Codable, Equatable, Comparable {
+    
+    let id = UUID().uuidString
     let title: String
     let versions: [String]
-    let max_content_length: UInt64
+    let max_content_length: String // for taxii-2.0   --> for taxii-2.1 use UInt64
     let description: String?
+    
+    public static func == (lhs: TaxiiApiRoot, rhs: TaxiiApiRoot) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiApiRoot, rhs: TaxiiApiRoot) -> Bool {
+        lhs.id < rhs.id
+    } 
 }
 
 /* Taxii-2.0 only
  * This type represents an object that was not added to the Collection.
  */
-struct TaxiiStatusFailure: Codable {
+struct TaxiiStatusFailure: Identifiable, Codable, Equatable, Comparable {
     let id: String
     let message: [String]?
+    
+    public static func == (lhs: TaxiiStatusFailure, rhs: TaxiiStatusFailure) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiStatusFailure, rhs: TaxiiStatusFailure) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * This type represents an object that was not added to the Collection.
  */
-struct TaxiiStatusDetails: Codable {
+struct TaxiiStatusDetails: Identifiable, Codable, Equatable, Comparable {
     let id: String
     let version: String
     let message: [String]?
+    
+    public static func == (lhs: TaxiiStatusDetails, rhs: TaxiiStatusDetails) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiStatusDetails, rhs: TaxiiStatusDetails) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * The status resource represents information about a request to add objects to a Collection.
  */
-struct TaxiiStatus: Codable {
+struct TaxiiStatus: Identifiable, Codable, Equatable, Comparable {
     let id: String
     let status: String
     let total_count: UInt64
@@ -73,6 +124,14 @@ struct TaxiiStatus: Codable {
     let failures: [TaxiiStatusDetails]?
     let pendings: [TaxiiStatusDetails]?
     let successes: [TaxiiStatusDetails]?
+    
+    public static func == (lhs: TaxiiStatus, rhs: TaxiiStatus) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiStatus, rhs: TaxiiStatus) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
@@ -81,7 +140,8 @@ struct TaxiiStatus: Codable {
  * including a human-readable title and description, an error_code and error_id,
  * and a details structure to capture further structured information about the error.
  */
-struct TaxiiErrorMessage: Codable {
+struct TaxiiErrorMessage: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let title: String
     let description: [String]?
     let error_id: [String]?
@@ -89,6 +149,14 @@ struct TaxiiErrorMessage: Codable {
     let http_status: [String]?
     let external_details: [String]?
     let details: [String:String]?
+    
+    public static func == (lhs: TaxiiErrorMessage, rhs: TaxiiErrorMessage) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiErrorMessage, rhs: TaxiiErrorMessage) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
@@ -99,7 +167,7 @@ struct TaxiiErrorMessage: Codable {
  * and whether the TAXII Client, as authenticated, can get objects from
  * the Collection and/or add objects to it.
  */
-struct TaxiiCollection: Codable {
+struct TaxiiCollection: Identifiable, Codable, Equatable, Comparable {
     let id: String
     let title: String
     let can_read: Bool
@@ -107,33 +175,66 @@ struct TaxiiCollection: Codable {
     let description: String?
     let alias: String?
     let media_types: [String]?
+    
+    public static func == (lhs: TaxiiCollection, rhs: TaxiiCollection) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiCollection, rhs: TaxiiCollection) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * The collections resource is a simple wrapper around a list of collection resources.
  */
-struct TaxiiCollections: Codable {
+struct TaxiiCollections: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let collections: [TaxiiCollection]?
+    
+    public static func == (lhs: TaxiiCollections, rhs: TaxiiCollections) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiCollections, rhs: TaxiiCollections) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /* Taxii-2.0 only
  * The manifest-entry type captures metadata about a single object, indicated by the id property.
  */
-struct TaxiiManifestEntry: Codable {
-    let id: String 
+struct TaxiiManifestEntry: Identifiable, Codable, Equatable, Comparable {
+    let id: String
     let date_added: [String]?
     let versions: [String]?
     let media_types: [String]?
+    
+    public static func == (lhs: TaxiiManifestEntry, rhs: TaxiiManifestEntry) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiManifestEntry, rhs: TaxiiManifestEntry) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * The manifest-record type captures metadata about a single object, indicated by the id property.
  */
-struct TaxiiManifestRecord: Codable {
+struct TaxiiManifestRecord: Identifiable, Codable, Equatable, Comparable {
     let id: String
     let date_added: [String]
     let versions: [String]
     let media_types: [String]?
+    
+    public static func == (lhs: TaxiiManifestRecord, rhs: TaxiiManifestRecord) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiManifestRecord, rhs: TaxiiManifestRecord) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
@@ -186,35 +287,71 @@ struct TaxiiFilters: Codable {
 /*
  * The manifest resource is a simple wrapper around a list of manifest-record items.
  */
-struct TaxiiManifestResource: Codable {
+struct TaxiiManifestResource: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let more: Bool?
     let objects: [TaxiiManifestRecord]?
+    
+    public static func == (lhs: TaxiiManifestResource, rhs: TaxiiManifestResource) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiManifestResource, rhs: TaxiiManifestResource) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * The versions resource is a simple wrapper around a list of versions.
  */
-struct TaxiiVersionResource: Codable {
+struct TaxiiVersionResource: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let more: Bool?
     let versions: [String]?
+    
+    public static func == (lhs: TaxiiVersionResource, rhs: TaxiiVersionResource) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiVersionResource, rhs: TaxiiVersionResource) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /* Taxii-2.0 only
  * The bundle is a simple wrapper for STIX 2.0 content.
  */
-struct TaxiiBundle: Codable {
+struct TaxiiBundle: Identifiable, Codable, Equatable, Comparable {
     let type: String
     let id: String
     let spec_version: String
     let objects: [JSON]?
+
+    public static func == (lhs: TaxiiBundle, rhs: TaxiiBundle) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiBundle, rhs: TaxiiBundle) -> Bool {
+        lhs.id < rhs.id
+    }
 }
 
 /*
  * The envelope is a simple wrapper for STIX 2.1 content.
  * When returning STIX 2.1 content in a TAXII-2.1 response the HTTP root object payload MUST be an envelope.
  */
-struct TaxiiEnvelope: Codable {
+struct TaxiiEnvelope: Identifiable, Codable, Equatable, Comparable {
+    let id = UUID().uuidString
     let more: Bool?
     let next: String?
     let objects: [JSON]?
+    
+    public static func == (lhs: TaxiiEnvelope, rhs: TaxiiEnvelope) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func < (lhs: TaxiiEnvelope, rhs: TaxiiEnvelope) -> Bool {
+        lhs.id < rhs.id
+    }
 }
+
