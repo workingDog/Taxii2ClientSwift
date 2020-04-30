@@ -19,6 +19,7 @@ import GenericJSON
  * or the one to use in the absence of other information/user choice.
  */
 struct TaxiiDiscovery: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let title: String
     let description: String?
@@ -82,6 +83,7 @@ struct TaxiiApiRoot: Identifiable, Codable, Equatable, Comparable {
  * This type represents an object that was not added to the Collection.
  */
 struct TaxiiStatusFailure: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let message: [String]?
     
@@ -98,6 +100,7 @@ struct TaxiiStatusFailure: Identifiable, Codable, Equatable, Comparable {
  * This type represents an object that was not added to the Collection.
  */
 struct TaxiiStatusDetails: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let version: String
     let message: [String]?
@@ -115,6 +118,7 @@ struct TaxiiStatusDetails: Identifiable, Codable, Equatable, Comparable {
  * The status resource represents information about a request to add objects to a Collection.
  */
 struct TaxiiStatus: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let status: String
     let total_count: UInt64
@@ -142,6 +146,7 @@ struct TaxiiStatus: Identifiable, Codable, Equatable, Comparable {
  * and a details structure to capture further structured information about the error.
  */
 struct TaxiiErrorMessage: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let title: String
     let description: [String]?
@@ -169,6 +174,7 @@ struct TaxiiErrorMessage: Identifiable, Codable, Equatable, Comparable {
  * the Collection and/or add objects to it.
  */
 struct TaxiiCollection: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let title: String
     let can_read: Bool
@@ -190,6 +196,7 @@ struct TaxiiCollection: Identifiable, Codable, Equatable, Comparable {
  * The collections resource is a simple wrapper around a list of collection resources.
  */
 struct TaxiiCollections: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let collections: [TaxiiCollection]?
     
@@ -206,6 +213,7 @@ struct TaxiiCollections: Identifiable, Codable, Equatable, Comparable {
  * The manifest-entry type captures metadata about a single object, indicated by the id property.
  */
 struct TaxiiManifestEntry: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let date_added: [String]?
     let versions: [String]?
@@ -224,6 +232,7 @@ struct TaxiiManifestEntry: Identifiable, Codable, Equatable, Comparable {
  * The manifest-record type captures metadata about a single object, indicated by the id property.
  */
 struct TaxiiManifestRecord: Identifiable, Codable, Equatable, Comparable {
+    
     let id: String
     let date_added: [String]
     let versions: [String]
@@ -242,6 +251,7 @@ struct TaxiiManifestRecord: Identifiable, Codable, Equatable, Comparable {
  * The URL Filtering Parameters
  */
 struct TaxiiFilters: Codable {
+    
     let added_after: String?
     let limit: Int?
     let next: String?
@@ -289,6 +299,7 @@ struct TaxiiFilters: Codable {
  * The manifest resource is a simple wrapper around a list of manifest-record items.
  */
 struct TaxiiManifestResource: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let more: Bool?
     let objects: [TaxiiManifestRecord]?
@@ -306,6 +317,7 @@ struct TaxiiManifestResource: Identifiable, Codable, Equatable, Comparable {
  * The versions resource is a simple wrapper around a list of versions.
  */
 struct TaxiiVersionResource: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let more: Bool?
     let versions: [String]?
@@ -323,6 +335,7 @@ struct TaxiiVersionResource: Identifiable, Codable, Equatable, Comparable {
  * The bundle is a simple wrapper for STIX 2.0 content.
  */
 struct TaxiiBundle: Identifiable, Codable, Equatable, Comparable {
+    
     let type: String
     let id: String
     let spec_version: String
@@ -342,6 +355,7 @@ struct TaxiiBundle: Identifiable, Codable, Equatable, Comparable {
  * When returning STIX 2.1 content in a TAXII-2.1 response the HTTP root object payload MUST be an envelope.
  */
 struct TaxiiEnvelope: Identifiable, Codable, Equatable, Comparable {
+    
     let id = UUID().uuidString
     let more: Bool?
     let next: String?

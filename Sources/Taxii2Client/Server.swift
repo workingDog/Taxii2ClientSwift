@@ -45,7 +45,7 @@ class Server {
             self.discovery()
         }.then { disc -> Promise<[TaxiiApiRoot]> in   // <-- important
             if let roots = disc?.api_roots {
-                return self.getRoots(from: roots)
+                return self.getALlRoots(from: roots)
             } else {
                 return Promise<[TaxiiApiRoot]> { seal in
                     seal.resolve(.fulfilled([TaxiiApiRoot]()))
@@ -54,15 +54,13 @@ class Server {
         }
     }
     
-    private func getRoots(from disc: [String]) -> Promise<[TaxiiApiRoot]> {
+    private func getALlRoots(from disc: [String]) -> Promise<[TaxiiApiRoot]> {
         when(resolved: disc.map { ApiRoot(api_root: $0, conn: self.conn).get().compactMap{$0} }).map { results in
             var arr = [TaxiiApiRoot]()
             results.forEach { result in
                 switch result {
-                case .fulfilled(let res):
-                    arr.append(res)
-                case .rejected(let error):
-                    print("=====> Action partially failed: \(error)")
+                    case .fulfilled(let res): arr.append(res)
+                    case .rejected(let error): print("=====> Action partially failed: \(error)")
                 }
             }
             return arr
