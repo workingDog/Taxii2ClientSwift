@@ -68,3 +68,39 @@ class Server {
     }
     
 }
+
+extension Server {
+    
+    // returns the discovered api-roots as a dictionary api_root_url -> TaxiiApiRoot
+    func getApirootsDict() -> Promise<[String : TaxiiApiRoot]> {
+        return firstly {
+            self.discovery()
+        }.then { disc -> Promise<[String : TaxiiApiRoot]> in   // <-- important
+            if let roots = disc?.api_roots {
+                return self.getRootsDict(from: roots)
+            } else {
+                return Promise<[String : TaxiiApiRoot]> { seal in
+                    seal.resolve(.fulfilled([:]))
+                }
+            }
+        }
+    }
+    
+    private func getRootsDict(from disc: [String]) -> Promise<[String : TaxiiApiRoot]> {
+        when(resolved: disc.map { ApiRoot(api_root: $0, conn: self.conn).get().compactMap{$0} }).map { results in
+            var dict = [String : TaxiiApiRoot]()
+            var k = 0
+            results.forEach { result in
+                switch result {
+                case .fulfilled(let res):
+                    dict[disc[k]] = res
+                case .rejected(let error):
+                    print("=====> Action partially failed: \(error)")
+                }
+                k += 1
+            }
+            return dict
+        }
+    }
+    
+}
