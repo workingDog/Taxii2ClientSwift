@@ -32,30 +32,25 @@ class Collection {
         self.basePath = self.api_root + "collections/" + self.taxiiCollection.id
         self.thePath = self.basePath + "/objects/"
     }
-
-    // taxii 2.1
-    func getEnvelope() -> Promise<TaxiiEnvelope?> {
-        return conn.fetchThis(path: thePath, headerType: 1, taxiiType: TaxiiEnvelope.self)
-    }
-    
+   
     // taxii-2.0
     func getBundle() -> Promise<TaxiiBundle?> {
         return conn.fetchThis(path: thePath, headerType: 1, taxiiType: TaxiiBundle.self)
     }
-
-    func getObjects(filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+    
+    func getObjects(filters: TaxiiFilters? = nil) -> Promise<TaxiiEnvelope?> {
         if let theFilters = filters {
-            return conn.fetchThisWithFilters(path: thePath + "objects/", filters: theFilters, taxiiType: JSON.self)
+            return conn.fetchThisWithFilters(path: thePath + "objects/", filters: theFilters, taxiiType: TaxiiEnvelope.self)
         } else {
-            return conn.fetchThis(path: thePath + "objects/", headerType: 1, taxiiType: JSON.self)
+            return conn.fetchThis(path: thePath + "objects/", headerType: 1, taxiiType: TaxiiEnvelope.self)
         }
     }
 
-    func getObject(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<JSON?> {
+    func getObject(obj_id: String, filters: TaxiiFilters? = nil) -> Promise<TaxiiEnvelope?> {
         if let theFilters = filters {
-            return conn.fetchThisWithFilters(path: thePath + obj_id + "/", filters: theFilters, taxiiType: JSON.self)
+            return conn.fetchThisWithFilters(path: thePath + obj_id + "/", filters: theFilters, taxiiType: TaxiiEnvelope.self)
         } else {
-            return conn.fetchThis(path: thePath + obj_id + "/", headerType: 1, taxiiType: JSON.self)
+            return conn.fetchThis(path: thePath + obj_id + "/", headerType: 1, taxiiType: TaxiiEnvelope.self)
         }
     }
 
