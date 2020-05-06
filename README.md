@@ -24,17 +24,17 @@ It provides the following endpoints:
 
 ### Usage
 
-The following TAXII 2.1 API services are supported with these corresponding async methods. Each method returns a (PromiseKit) Promise.
+The following TAXII 2.1 API services are supported with these corresponding async methods. Each method returns a Promise.
 
 - Server Discovery --> server.discovery 
 - Get API Root Information --> server.getApiroots()
 - Get Collections --> collections.get() and collections.get(index)
 - Get Object Manifests --> collection.getManifests()
 - Get Status --> status.get()
-- Add Objects --> collection.addObject(bundle) and collection.addObjects(envelope)
-- Get Objects --> collection.getBundle() and getEnvelope()
+- Add Objects --> collection.addObjects(envelope) and collection.addObject(bundle) for TAXII-2.0  
+- Get Objects --> collection.getObjects() and getBundle() for TAXII-2.0 
 
-(NOTE: the objects return from getBundle() and getEnvelope() consist of JSON constructs, not Swift STIX-2.1 class objects)
+(NOTE: the objects returned from getBundle() and getObjects() consist of JSON constructs, not Swift STIX-2 class objects)
 
 The class *TaxiiConnection* provides the async communication to the server.
 

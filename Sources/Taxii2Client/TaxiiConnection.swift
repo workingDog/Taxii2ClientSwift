@@ -26,7 +26,6 @@ class TaxiiConnection: TaxiiConnect {
      * @return Promise
      */
     func fetchThis<T: Decodable>(path: String, headerType: Int = 0, taxiiType: T.Type) -> Promise<T?> {
-     //   print("----> fetchThis path: \(path)")
         let mediaType = headerType == 1 ? mediaStix : mediaTaxii
         let url = URL(string: path)!
         var request = URLRequest(url: url)
@@ -55,7 +54,6 @@ class TaxiiConnection: TaxiiConnect {
      */
     func fetchThisWithFilters<T: Decodable>(path: String, filters: TaxiiFilters, headerType: Int = 0, taxiiType: T.Type) -> Promise<T?> {
         let params: [String:String] = filters.asParameters()
-     //   print("----> fetchThisWithFilters path: \(path)  params: \(params)")
         let mediaType = headerType == 1 ? mediaStix : mediaTaxii
 
         var components = URLComponents(string: path)!
@@ -113,7 +111,6 @@ class TaxiiConnection: TaxiiConnect {
      * @return Promise
      */
     func fetchRaw(path: String, headerType: Int = 0) -> Promise<Data> {
-    //    print("----> fetchRaw path: \(path)")
         let mediaType = headerType == 1 ? mediaStix : mediaTaxii
         let url = URL(string: path)!
         var request = URLRequest(url: url)
