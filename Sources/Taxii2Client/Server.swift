@@ -20,10 +20,14 @@ class Server {
     let path: String
     let conn: TaxiiConnection
     
-    // "/taxii2/" for taxii-2.1
-    init(path: String = "/taxii/", conn: TaxiiConnection) {
-        self.path = TaxiiConnection.withLastSlash(path)
-        self.conn = conn
+    init(conn: TaxiiConnection) {
+        if conn.taxiiVersion.trim() == "2.1" {
+            self.path = TaxiiConnection.withLastSlash("/taxii2/")
+            self.conn = conn
+        } else {
+            self.path = TaxiiConnection.withLastSlash("/taxii/")
+            self.conn = conn
+        }
     }
     
     func discovery() -> Promise<TaxiiDiscovery?> {
